@@ -1,8 +1,32 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
 import base64
 from app import app
+import openai
 
 # Import any other necessary modules for processing the image
+
+openai.api_key = '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'
+
+@app.route('/chat', methods=['POST'])
+def message():
+    # Extract the message from the request
+    data = request.json
+    user_message = data['message']
+
+    # Call the OpenAI API
+    try:
+        response = openai.Completion.create(
+            engine="text-davinci-004",
+            prompt=user_message,
+            max_tokens=150
+        )
+        ai_message = response.choices[0].text.strip()
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    # Return the AI's response
+    return jsonify({'message': ai_message})
+
 
 def image_processing(bytes):
 
@@ -103,13 +127,14 @@ def index():
 
     return render_template('index.html')
 
-@app.route('/generate', methods=['POST'])
+@app.route('/generate', methods=['OPTIONS'])
 def generate():
     data = request.get_json()
     imageProcessed = data.get('imageData', '')
     imageProcessed = base64.b64decode(imageProcessed)
 
     result = image_processing(imageProcessed)
+    result.headers.add('Access-Control-Allow-Origin', '*')
     print(result)
     return result
     
@@ -119,3 +144,7 @@ def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/chat')
+def chat():
+    return render_template('chat.html')
