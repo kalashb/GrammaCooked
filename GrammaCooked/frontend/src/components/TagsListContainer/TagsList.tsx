@@ -1,6 +1,6 @@
 // TagsList.tsx
 import React from 'react';
-import { Tag, TagLabel, TagCloseButton, TagProps, VStack } from '@chakra-ui/react';
+import {Tag, TagLabel, TagCloseButton, TagProps, HStack, Wrap} from '@chakra-ui/react';
 
 interface TagsListProps {
     tags: string[];
@@ -9,14 +9,14 @@ interface TagsListProps {
 
 const TagsList: React.FC<TagsListProps> = ({ tags, onDeleteTag }) => {
     return (
-        <VStack spacing={2} align="start">
+        <Wrap spacing={2} align="start" mt={5} >
             {tags.map((tag, index) => (
                 <Tag key={index} size="md" colorScheme="teal">
                     <TagLabel>{tag}</TagLabel>
                     <TagCloseButton onClick={() => onDeleteTag(tag)} />
                 </Tag>
             ))}
-        </VStack>
+        </Wrap>
     );
 };
 

@@ -64,7 +64,7 @@ def image_processing(bytes):
 
     # Since we have one input, one output will exist here
     output = post_model_outputs_response.outputs[0]
-    # print(output)
+    print(output)
 
     result = []
     # print("Predicted concepts:")
