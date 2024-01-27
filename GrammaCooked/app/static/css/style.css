@@ -1,0 +1,45 @@
+body {
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    background-color: #6a5acd; /* Adjust the purple color as needed */
+}
+
+header {
+    /* Add your styles for header and navigation */
+}
+
+#hero {
+    text-align: center;
+    padding: 100px 20px;
+}
+
+#hero h1 {
+    margin-bottom: 20px;
+}
+
+#hero p {
+    margin-bottom: 40px;
+}
+
+#hero form {
+    /* Add styles for your form */
+}
+
+#hero form input[type="text"] {
+    padding: 10px;
+    margin-right: 10px;
+    width: 50%;
+    /* Add more styling */
+}
+
+#hero form button {
+    padding: 10px 20px;
+    cursor: pointer;
+    /* Add more styling */
+}
+
+footer {
+    /* Add your styles for footer */
+}
