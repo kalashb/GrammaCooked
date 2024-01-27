@@ -8,7 +8,7 @@ interface HomePageProps {
 const HomePage : React.FC<HomePageProps> = () => {
     
     return (
-        <RecipePanelContainer/>
+        <RecipePanelContainer />
     )
 }
 

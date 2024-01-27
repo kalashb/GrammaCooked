@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { ChangeEvent, useState } from "react";
 
 interface RecipePanelContainerProps {
-
+    
 }
 
 const RecipePanelContainer: React.FC<RecipePanelContainerProps> = () => {
@@ -25,7 +25,7 @@ const RecipePanelContainer: React.FC<RecipePanelContainerProps> = () => {
                 reader.onload = async () => {
                     const base64Data = reader.result?.toString().split(',')[1];
 
-                    console.log(base64Data)
+                    console.log(base64Data);
 
                     // Send the image data to the backend
                     const response = await axios.post('http://127.0.0.1:5000/generate', {
@@ -50,18 +50,15 @@ const RecipePanelContainer: React.FC<RecipePanelContainerProps> = () => {
             backgroundColor="#6a5acd"
         >
             <Heading>Meet Your Personal AI-Powered Kitchen Assistant</Heading>
-            <Text textAlign="center">Simply type a recipe idea or some ingredients you have on hand and DishGen's AI will instantly generate an all-new recipe on demand...</Text>
+            <Text textAlign="center">Simply type a recipe idea or some ingredients you have on hand, and DishGen's AI will instantly generate an all-new recipe on demand...</Text>
 
             <div>
                 <input type="file" onChange={handleFileChange} />
             </div>
 
-            <Button
-              onClick={handleUpload}
-            >Generate</Button>
-
+            <Button onClick={handleUpload}>Generate</Button>
         </Flex>
-    )
-}
+    );
+};
 
 export default RecipePanelContainer;
