@@ -28,7 +28,7 @@ const Homepage: React.FC<HomePageProps> = () => {
                     console.log(base64Data)
 
                     // Send the image data to the backend
-                    const response = await axios.post('http://your-backend-url/process-image', {
+                    const response = await axios.post('http://127.0.0.1:5000/generate', {
                         imageData: base64Data,
                     });
 
