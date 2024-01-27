@@ -6,7 +6,7 @@ interface RecipePanelContainerProps {
 
 }
 
-const RecipePanelContainerProps: React.FC<RecipePanelContainerProps> = () => {
+const RecipePanelContainer: React.FC<RecipePanelContainerProps> = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -64,4 +64,4 @@ const RecipePanelContainerProps: React.FC<RecipePanelContainerProps> = () => {
     )
 }
 
-export default RecipePanelContainerProps;
+export default RecipePanelContainer;

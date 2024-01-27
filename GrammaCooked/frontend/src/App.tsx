@@ -1,12 +1,20 @@
-import { ChakraProvider } from '@chakra-ui/react'
-import HomePage from './components/HomePage'
-import React from 'react'
+import {ChakraProvider, Switch} from '@chakra-ui/react'
+import LoginPage from './components/LoginPage.tsx'
+import AuthPanel from "./components/Auth/AuthPanel";
+import {BrowserRouter, Route, Router, Routes} from "react-router-dom";
+import AuthenticatedRoute from "./components/Route/RequireAuth.tsx";
+import RequireAuth from './components/Route/RequireAuth.tsx';
+import HomePage from './components/HomePage.tsx';
 
 function App() {
-
   return (
     <ChakraProvider >
-      <HomePage />
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/home" element={<RequireAuth><HomePage /></RequireAuth>} />
+            </Routes>
+        </BrowserRouter>
     </ChakraProvider>
   )
 }
