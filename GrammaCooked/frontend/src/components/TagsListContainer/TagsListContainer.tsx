@@ -22,6 +22,11 @@ const TagsListContainer = () => {
         if (tags.length === 0) {
             return;
         }
+
+        if (location === "") {
+            return;
+        }
+
         setIsLoading(true);
 
         const response = await axios.post('http://127.0.0.1:5000/chat2', {

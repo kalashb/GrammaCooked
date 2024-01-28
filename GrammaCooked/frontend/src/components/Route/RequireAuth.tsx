@@ -1,26 +1,13 @@
-import React, {ReactElement, ReactNode, useEffect, useState} from 'react';
-import {Route, Navigate, useNavigation, useLocation, useNavigate} from 'react-router-dom';
-import React, {ReactElement, ReactNode, useEffect, useState} from 'react';
-import {Route, Navigate, useNavigation, useLocation, useNavigate} from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth'
-import {auth} from "../../firebase/firebase";
-import {User} from "firebase/auth";
-import { onAuthStateChanged } from "firebase/auth"
-import {auth} from "../../firebase/firebase";
-import {User} from "firebase/auth";
-import { onAuthStateChanged } from "firebase/auth"
+import { onAuthStateChanged } from "firebase/auth";
+import React, { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth } from "../../firebase/firebase";
 
 interface AuthenticatedRouteProps {
     children: ReactNode
 }
 
 const RequireAuth: React.FC<AuthenticatedRouteProps>  = ({ children }) => {
-    const navigate = useNavigate();
-    onAuthStateChanged(auth, (user) => {
-        if (!user) {
-            navigate("/");
-        }
-    })
     const navigate = useNavigate();
     onAuthStateChanged(auth, (user) => {
         if (!user) {
