@@ -8,8 +8,10 @@ import {
     VStack,
     HStack,
     Text,
-    extendTheme
+    extendTheme,
+    Circle
 } from '@chakra-ui/react';
+import axios from 'axios';
 
 // Extend the theme to include custom colors, fonts, etc
 const theme = extendTheme({
@@ -40,25 +42,59 @@ const theme = extendTheme({
 
 const ChatBot = () => {
     const [userInput, setUserInput] = useState('');
-    const [messages, setMessages] = useState<{ sender: string; message: string }[]>([]);
-    const sendMessage = async (userInput: string) => {
-        try {
-            const response = await fetch('http://localhost:5000/message', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message: userInput }),
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+    const [messages, setMessages] = useState<{ role: string; message: string }[]>([]);
+    const sendMessage = async (userInput:string) => {
+        if (!userInput.trim()) return;  // Prevents sending empty messages
+    
+        // Update UI immediately to show the user's message
+        setMessages([...messages, { role: 'USER', message: userInput }]);
+
+
+        if (messages.length <= 1) {
+            try {
+                const response = await axios.post('http://127.0.0.1:5000/chat2', {
+                    message: userInput,  // You might need to adjust this depending on the expected format of your backend
+                    // Include any other data your backend expects
+                });
+    
+                console.log(response)
+        
+                // Assuming your backend sends back a string to be displayed as the bot's response
+                const botMessage = response.data.botMessage; // Adjust this according to the actual response structure
+        
+                // Update UI to show the bot's message
+                setMessages((prevMessages) => [...prevMessages, { role: 'CHATBOT', message: botMessage }]);
+            } catch (error) {
+                console.error('There was an error sending the message: ', error);
+                // Handle the error accordingly
+                // Maybe display a message to the user that something went wrong
             }
-            const data = await response.json();
-            // Update your state or context with the response to display the message
-            console.log(data.message);
-        } catch (error) {
-            console.error('Error sending message:', error);
+        } else {
+            try {
+                const response = await axios.post('http://127.0.0.1:5000/chat3', {
+                    message: userInput,  // You might need to adjust this depending on the expected format of your backend
+                    chat_history: messages
+                    // Include any other data your backend expects
+                });
+    
+                console.log(response)
+        
+                // Assuming your backend sends back a string to be displayed as the bot's response
+                const botMessage = response.data.botMessage; // Adjust this according to the actual response structure
+        
+                // Update UI to show the bot's message
+                setMessages((prevMessages) => [...prevMessages, { role: 'CHATBOT', message: botMessage }]);
+            } catch (error) {
+                console.error('There was an error sending the message: ', error);
+                // Handle the error accordingly
+                // Maybe display a message to the user that something went wrong
+            }
         }
+    
+       
+    
+        // Clear the input field after sending the message
+        setUserInput('');
     };
     
     // ... sendMessage and other functions ...
@@ -70,7 +106,7 @@ const ChatBot = () => {
                 p={5}
                 boxShadow="md"
                 borderRadius="lg"
-                bgColor="purple.600"
+                bgColor="purple.400"
                 color="white"
                 align="stretch"
             >
@@ -80,12 +116,12 @@ const ChatBot = () => {
                     p={3}
                     spacing={3}
                     overflowY="auto"
-                    bg="purple.200"
+                    bg="white"
                     borderRadius="lg"
                 >
                     {messages.map((message, index) => (
-                        <HStack key={index} alignSelf={message.sender === 'user' ? 'flex-end' : 'flex-start'}>
-                            <Box bg={message.sender === 'user' ? 'purple.200' : 'purple.300'}>
+                        <HStack key={index} alignSelf={message.role === 'USER' ? 'flex-end' : 'flex-start'} maxWidth="65%">
+                            <Box bg={message.role === 'USER' ? 'purple.100' : 'purple.100'} px={2} py={1} borderRadius={12}>
                                 <Text color="purple.800">{message.message}</Text>
                             </Box>
                         </HStack>
@@ -96,11 +132,11 @@ const ChatBot = () => {
                         placeholder="Type a message..."
                         value={userInput}
                         onChange={(e) => setUserInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                        onKeyPress={(e) => e.key === 'Enter' && sendMessage(userInput)}
                         bgColor="white"
                         color="purple.800"
                     />
-                    <Button colorScheme="purple" onClick={sendMessage}>Send</Button>
+                    <Button colorScheme="purple" onClick={() => sendMessage(userInput)}>Send</Button>
                 </HStack>
             </VStack>
         </ChakraProvider>
