@@ -12,16 +12,14 @@ const OAuthButtons: React.FC = () => {
     const [signInWithGoogle, userCred, loading, error] = useSignInWithGoogle(auth);
 
     const createUserDocument = async (user: User) => {
-        console.log("hi")
         const userDocRef = doc(firestore, 'users', user.uid);
         await setDoc(userDocRef, JSON.parse(JSON.stringify(user)));
-        console.log("bye")
     }
 
     useEffect(() => {
         if (userCred) {
             console.log(userCred)
-            createUserDocument(userCred.user);
+            createUserDocument(userCred.user)
             navigate("/home");
         }
     }, [userCred])
