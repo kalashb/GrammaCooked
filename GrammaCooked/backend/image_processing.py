@@ -13,7 +13,7 @@ APP_ID = 'app1'
 # Change these to whatever model and image URL you want to use
 MODEL_ID = 'food-item-recognition'
 MODEL_VERSION_ID = '1d5fd481e0cf4826aa72ec3ff049e044'
-IMAGE_URL = 'https://samples.clarifai.com/metro-north.jpg'
+IMAGE_URL = 'https://www.allrecipes.com/thmb/CVDJa_JNexHs6-m3kDj2N9GmWnw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Ingredients-Stored-Incorrectly-In-Fridge-2x1-1-9c84891a47694b049e26debb550a8977.png'
 IMAGE_FILE_LOCATION = 'dd6b1621-4b08-4b52-88f9-a0b60e89816d--2020-1013_sponsored_LG_fridge_article-hero_3x2_rocky-luten_012.jpg'
 
 ############################################################################
