@@ -167,7 +167,7 @@ const TagsListContainer = () => {
                 width="100%"
                 align="center"
                 justify="center"
-            ><Button colorScheme="purple" onClick={onGenerate} disabled={isLoading ? true : false}>
+            ><Button colorScheme="purple" onClick={onGenerate} isDisabled={isLoading ? true : false}>
                     {isLoading ? <Spinner /> :
                         "Generate Recipe"
                     }
