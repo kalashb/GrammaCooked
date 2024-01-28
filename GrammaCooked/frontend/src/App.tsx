@@ -5,7 +5,8 @@ import {BrowserRouter, Route, Router, Routes} from "react-router-dom";
 import AuthenticatedRoute from "./components/Route/RequireAuth.tsx";
 import RequireAuth from './components/Route/RequireAuth.tsx';
 import HomePage from './components/HomePage.tsx';
-import ChatBot from './components/ChatBot.tsx';
+import ChatBot from './components/Chat/ChatBot.tsx';
+import ChatContainer from "./components/Chat/ChatContainer.tsx";
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/home" element={<RequireAuth><HomePage /></RequireAuth>} />
-                <Route path="/chat" element={<ChatBot />} />
+                <Route path="/chat/:id" element={<RequireAuth><ChatContainer /></RequireAuth>} />
             </Routes>
         </BrowserRouter>
     </ChakraProvider>
