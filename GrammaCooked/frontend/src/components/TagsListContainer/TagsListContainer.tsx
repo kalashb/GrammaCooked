@@ -1,5 +1,5 @@
-import React, {ChangeEvent, useState} from "react";
-import {Box, Button, Flex, Heading, Input, Text} from "@chakra-ui/react";
+import React, { ChangeEvent, useState } from "react";
+import { Box, Button, Flex, Heading, Input, Text } from "@chakra-ui/react";
 import axios from "axios";
 import TagsList from "./TagsList.tsx";
 
@@ -44,25 +44,23 @@ const TagsListContainer = () => {
                         imageData: base64Data,
                     });
 
-                    console.log(response.data)
-
                     let message = "";
 
                     // Handle the response from the backend
-                    let filteredResult : string[] = [];
+                    let filteredResult: string[] = [];
                     if (response.data) {
-                        filteredResult =  response.data
-                            .filter((item: { ingredient: string, value: number}) => item.value > 0.15)
-                            .map((item: {ingredient: string, value: number}) => item.ingredient);
+                        filteredResult = response.data
+                            .filter((item: { ingredient: string, value: number }) => item.value > 0.15)
+                            .map((item: { ingredient: string, value: number }) => item.ingredient);
                     } else {
                         message = "No ingredients detected!";
                     }
 
                     if (filteredResult.length > 0) {
-                        message ="Analysis Successful!";
+                        message = "Analysis Successful!";
                         setTags(tags.concat(filteredResult));
                     } else {
-                        message ="No ingredients detected!";
+                        message = "No ingredients detected!";
                     }
                     setMessage(message);
                 };
@@ -99,7 +97,7 @@ const TagsListContainer = () => {
 
             {/* Upload Image Input */}
             <Flex>
-                <Input type="file" mb={4} onChange={handleFileChange} mr={2}/>
+                <Input type="file" mb={4} onChange={handleFileChange} mr={2} />
                 <Button onClick={handleUpload} colorScheme="teal" mr={2}>
                     Analyze
                 </Button>
@@ -108,6 +106,13 @@ const TagsListContainer = () => {
                 <Text mt={1} color="green">{message}</Text> :
                 <Text mt={1} color="red">{message}</Text>
             }
+            <Flex
+                mt={2}
+                width="100%"
+                align="center"
+                justify="center"
+            ><Button colorScheme="teal" >Generate Recipe</Button>
+            </Flex>
 
         </Box>
     )

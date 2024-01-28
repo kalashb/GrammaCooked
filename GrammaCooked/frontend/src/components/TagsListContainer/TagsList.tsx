@@ -1,6 +1,6 @@
 // TagsList.tsx
 import React from 'react';
-import {Tag, TagLabel, TagCloseButton, TagProps, HStack, Wrap} from '@chakra-ui/react';
+import {Tag, TagLabel, TagCloseButton, Wrap} from '@chakra-ui/react';
 
 interface TagsListProps {
     tags: string[];
