@@ -153,7 +153,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ chatId, userId }) => {
                         bgColor="white"
                         color="purple.800"
                     />
-                    <Button colorScheme="purple" onClick={() => sendMessage(userInput)}>{
+                    <Button colorScheme="purple" onClick={() => sendMessage(userInput)} isDisabled={isLoading}>{
                         isLoading ? <Spinner /> : "Send"
                     }</Button>
                 </HStack>
