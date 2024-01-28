@@ -1,13 +1,58 @@
 import React, { ChangeEvent, useState } from "react";
-import { Box, Button, Flex, Heading, Input, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, Spinner, Text } from "@chakra-ui/react";
 import axios from "axios";
 import TagsList from "./TagsList.tsx";
+import { useNavigate } from "react-router-dom";
+import { auth, firestore } from "../../firebase/firebase";
+import { doc, getDoc, runTransaction, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { v4 as uuidv4 } from 'uuid';
 
 const TagsListContainer = () => {
     const [tags, setTags] = useState<string[]>([]);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [newTag, setNewTag] = useState("");
     const [message, setMessage] = useState('');
+    const [location, setLocation] = useState("");
+    const [user] = useAuthState(auth);
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const onGenerate = async () => {
+        if (tags.length === 0) {
+            return;
+        }
+        setIsLoading(true);
+
+        const response = await axios.post('http://127.0.0.1:5000/chat2', {
+            ingredients: tags,
+            location: location
+        });
+
+        const generatedUUID: string = uuidv4();
+
+        if (response.data.botMessage) {
+            try {
+                // Reference to the user's node in the database
+                const userRef = doc(firestore, `users/${user?.uid}/chats/${generatedUUID}`);
+
+                // Save the list of strings under the 'myList' key
+                await setDoc(userRef, { chat_history: [{role: "CHATBOT", message: response.data.botMessage}], id: generatedUUID });
+
+                // const updatedDoc = await getDoc(userRef);
+
+                // // Access the updated data
+                // const updatedData = updatedDoc.data();
+            } catch (err) {
+                console.log(err)
+            }
+            
+        }
+
+        setIsLoading(false);
+
+        navigate(`/chat/${generatedUUID}`, { replace: true })
+    }
 
     const handleAddTag = () => {
         if (newTag.trim() !== '' && !tags.includes(newTag)) {
@@ -37,12 +82,12 @@ const TagsListContainer = () => {
                 reader.onload = async () => {
                     const base64Data = reader.result?.toString().split(',')[1];
 
-                    console.log(base64Data);
-
                     // Send the image data to the backend
                     const response = await axios.post('http://127.0.0.1:5000/generate', {
                         imageData: base64Data,
                     });
+
+                    console.log(response.data)
 
                     let message = "";
 
@@ -90,7 +135,7 @@ const TagsListContainer = () => {
                     onChange={(e) => setNewTag(e.target.value)}
                     mr={2}
                 />
-                <Button onClick={handleAddTag} colorScheme="teal" mr={2}>
+                <Button onClick={handleAddTag} colorScheme="purple" mr={2}>
                     Add Tag
                 </Button>
             </Flex>
@@ -98,7 +143,7 @@ const TagsListContainer = () => {
             {/* Upload Image Input */}
             <Flex>
                 <Input type="file" mb={4} onChange={handleFileChange} mr={2} />
-                <Button onClick={handleUpload} colorScheme="teal" mr={2}>
+                <Button onClick={handleUpload} colorScheme="purple" mr={2}>
                     Analyze
                 </Button>
             </Flex>
@@ -106,12 +151,22 @@ const TagsListContainer = () => {
                 <Text mt={1} color="green">{message}</Text> :
                 <Text mt={1} color="red">{message}</Text>
             }
+            <Flex mt={2}>
+                <FormControl>
+                    <FormLabel>Location</FormLabel>
+                    <Input value={location} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLocation(e.target.value)} />
+                </FormControl>
+            </Flex>
             <Flex
                 mt={2}
                 width="100%"
                 align="center"
                 justify="center"
-            ><Button colorScheme="teal" >Generate Recipe</Button>
+            ><Button colorScheme="purple" onClick={onGenerate} disabled={isLoading ? true : false}>
+                    {isLoading ? <Spinner /> :
+                        "Generate Recipe"
+                    }
+                </Button>
             </Flex>
 
         </Box>

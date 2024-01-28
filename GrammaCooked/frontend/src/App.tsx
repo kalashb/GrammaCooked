@@ -5,9 +5,8 @@ import {BrowserRouter, Route, Router, Routes, useNavigate} from "react-router-do
 import AuthenticatedRoute from "./components/Route/RequireAuth.tsx";
 import RequireAuth from './components/Route/RequireAuth.tsx';
 import HomePage from './components/HomePage.tsx';
-import HistoryPanel from './components/History/HistoryPanel.tsx';
-import {useState} from "react";
-import ChatBot from './components/ChatBot.tsx';
+import ChatBot from './components/Chat/ChatBot.tsx';
+import ChatContainer from "./components/Chat/ChatContainer.tsx";
 
 function App() {
     const history = ["lol", "ye", "haha"];
@@ -20,13 +19,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/home" element={<RequireAuth><HomePage /></RequireAuth>} />
-                <Route path="/chat" element={<ChatBot />} />
-                <Route path='chat/:id' element={<RequireAuth>
-                  <HistoryPanel
-                      history={history}
-                      selectedItem={selectedItem}
-                      setSelectedItem={setSelectedItem}
-                  /></RequireAuth>}></Route>
+                <Route path="/chat/:id" element={<RequireAuth><ChatContainer /></RequireAuth>} />
             </Routes>
         </BrowserRouter>
     </ChakraProvider>

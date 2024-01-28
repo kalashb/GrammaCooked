@@ -1,8 +1,6 @@
-// HistoryBar.tsx
-
 import React from 'react';
-import { Box, Flex, Text, VStack, useColorMode } from '@chakra-ui/react';
-import {useNavigate} from "react-router-dom";
+import { Box, Button, Flex, Text, VStack, useColorMode } from '@chakra-ui/react';
+import { useNavigate } from "react-router-dom";
 
 interface HistoryPanelProps {
     history: string[];
@@ -13,9 +11,9 @@ interface HistoryPanelProps {
 const HistoryPanel: React.FC<HistoryPanelProps> = ({ history, selectedItem, setSelectedItem }) => {
     const { colorMode } = useColorMode();
     const navigate = useNavigate();
-    const onItemClick = (item: string, index: number) => {
+    const onItemClick = (item: string) => {
         setSelectedItem(item);
-        navigate(`/chat/${index}`)
+        navigate(`/chat/${item}`)
     }
 
     return (
@@ -25,21 +23,17 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ history, selectedItem, setS
             p={2}
             borderRadius="md"
             boxShadow="md"
-            position="fixed"
-            left={0}
-            top={0}
-            bottom={0}
-            zIndex={10}
         >
-            <VStack align="start" spacing={2}>
+            <VStack align="start" spacing={2} height="93%" overflowY="auto">
                 <Text fontWeight="bold" mb={2}>
                     Chat History
                 </Text>
                 {history.map((item, index) => (
                     <Flex
-                        onClick={() => onItemClick(item, index)}
+                        key={item + index}
+                        onClick={() => onItemClick(item)}
                         borderRadius={99}
-                        _hover={{backgroundColor: selectedItem === item ? 'gray' : 'lightgray'}}
+                        _hover={{ backgroundColor: selectedItem === item ? 'gray' : 'lightgray' }}
                         backgroundColor={selectedItem === item ? "gray" : "transparent"}
                         cursor="pointer"
                         width="100%"
@@ -48,12 +42,25 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ history, selectedItem, setS
                     >
                         <Text
                             pl={3}
+                            whiteSpace="nowrap"
+                            overflow="hidden"
+                            textOverflow="ellipsis"
                         >
                             {item}
                         </Text>
                     </Flex>
                 ))}
             </VStack>
+            <Box
+                width="100%"
+                px={8}
+            >
+                <Button
+                    colorScheme="purple"
+                    width="100%"
+                    onClick={() => navigate("/home", {replace: true})}
+                >Analyze</Button>
+            </Box>
         </Box>
     );
 };

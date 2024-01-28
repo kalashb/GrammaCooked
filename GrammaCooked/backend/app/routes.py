@@ -1,27 +1,26 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
 import base64
+
+from flask_cors import cross_origin
 from app import app
 from openai import OpenAI
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
 import cohere
 
 # Import any other necessary modules for processing the image
 
 
-client = OpenAI(api_key='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')
-
-load_dotenv()
+# client = OpenAI(api_key='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')
+#
+# load_dotenv()
 
 @app.route('/chat2', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def message2():
     data = request.get_json()
-    user_message = data.get('message', '')
-
-    list_ingredients = ['eggs','milk','sugar','salt']
-    location = 'India'
-   
-    time_period = ''
+    list_ingredients = data.get('ingredients', [])
+    location = data.get('location', '')
 
     str_ingre = ", ".join(x for x in list_ingredients)
 
@@ -41,21 +40,16 @@ def message2():
         rec = restext.find(y)
         hypen = restext.find('-', rec, rec+40)
         print (restext[rec:hypen])
-        result += restext[rec:hypen]
+        result += restext[rec:hypen] + '\n'
 
-    print("-------------result")
-    print(result)
+    result += "Which recipe would you like to make?"
 
-    result += "Which recipe would you like to make? "
-
-
-    print("final ------")
-    print(result)
 
     return dict(botMessage = result)
 
 
 @app.route('/chat3', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def message3():
     data = request.get_json()
     chat_history = data.get('chat_history', '')
@@ -79,29 +73,29 @@ def message3():
 
     print(response2.text)
 
-    return dict(botMessage = response2.text + "\n What else would you like to ask?")
+    return dict(botMessage = response2.text + "\n Would you like to ask anything else concerning this recipe?")
  
 
-@app.route('/chat', methods=['POST'])
-def message():
-    # Extract the message from the request
-    data = request.json
-    user_message = data['message']
-    print(user_message)
-    # Call the OpenAI API
-    try:
-        response = client.completions.create(
-                    model="gpt-3.5-turbo-instruct",
-                    prompt="Say this is a test",
-                    max_tokens=7,
-                    temperature=0
-                    )
-        ai_message = response.choices[0].text.strip()
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-    # Return the AI's response
-    return jsonify({'message': ai_message})
+# @app.route('/chat', methods=['POST'])
+# def message():
+#     # Extract the message from the request
+#     data = request.json
+#     user_message = data['message']
+#     print(user_message)
+#     # Call the OpenAI API
+#     try:
+#         response = client.completions.create(
+#                     model="gpt-3.5-turbo-instruct",
+#                     prompt="Say this is a test",
+#                     max_tokens=7,
+#                     temperature=0
+#                     )
+#         ai_message = response.choices[0].text.strip()
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+#
+#     # Return the AI's response
+#     return jsonify({'message': ai_message})
 
 
 def image_processing(bytes):
@@ -204,6 +198,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def generate():
     data = request.get_json()
     imageProcessed = data.get('imageData', '')
