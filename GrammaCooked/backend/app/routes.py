@@ -1,8 +1,108 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
 import base64
 from app import app
+from openai import OpenAI
+from dotenv import load_dotenv
+import os
+import cohere
 
 # Import any other necessary modules for processing the image
+
+
+client = OpenAI(api_key='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')
+
+load_dotenv()
+
+@app.route('/chat2', methods=['POST'])
+def message2():
+    data = request.get_json()
+    user_message = data.get('message', '')
+
+    list_ingredients = ['eggs','milk','sugar','salt']
+    location = 'India'
+   
+    time_period = ''
+
+    str_ingre = ", ".join(x for x in list_ingredients)
+
+    co = cohere.Client('1N08QPmkHODlsZ7zmEHc4BPSSsE4dxpgJfaWGBMT')
+
+    promp= 'Generate a list of four recipes which would be nostalgic for someone from '+location+' in 2000s using the following list of ingredients '+str_ingre+'. '
+
+    instructions = 'Make sure all dish names are formatted as <Bullet Number>. <Dish Name> - <Description>. Do not put the dish name in bold.'
+
+    response = co.generate(prompt=promp+instructions)
+
+    restext = response.generations[0]
+
+    result = ""
+
+    for y in ['1.','2.','3.','4.']:
+        rec = restext.find(y)
+        hypen = restext.find('-', rec, rec+40)
+        print (restext[rec:hypen])
+        result += restext[rec:hypen]
+
+    print("-------------result")
+    print(result)
+
+    result += "Which recipe would you like to make? "
+
+
+    print("final ------")
+    print(result)
+
+    return dict(botMessage = result)
+
+
+@app.route('/chat3', methods=['POST'])
+def message3():
+    data = request.get_json()
+    chat_history = data.get('chat_history', '')
+    user_message = data.get('message', '')
+
+    message = ""
+
+    if (len(chat_history) == 2):
+        message = 'Give me a nostalgic version of a recipe for '+user_message+". Include a detailed list of ingredients, approximate cooking time, cooking instructions and serving size"
+    else:
+        message = user_message
+
+    co = cohere.Client('1N08QPmkHODlsZ7zmEHc4BPSSsE4dxpgJfaWGBMT')
+
+   
+    response2 = co.chat(
+    chat_history= chat_history,
+    message=message,
+    connectors=[{"id": "web-search"}]
+    )
+
+    print(response2.text)
+
+    return dict(botMessage = response2.text + "\n What else would you like to ask?")
+ 
+
+@app.route('/chat', methods=['POST'])
+def message():
+    # Extract the message from the request
+    data = request.json
+    user_message = data['message']
+    print(user_message)
+    # Call the OpenAI API
+    try:
+        response = client.completions.create(
+                    model="gpt-3.5-turbo-instruct",
+                    prompt="Say this is a test",
+                    max_tokens=7,
+                    temperature=0
+                    )
+        ai_message = response.choices[0].text.strip()
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    # Return the AI's response
+    return jsonify({'message': ai_message})
+
 
 def image_processing(bytes):
 
@@ -110,6 +210,7 @@ def generate():
     imageProcessed = base64.b64decode(imageProcessed)
 
     result = image_processing(imageProcessed)
+    
     print(result)
     return result
     
@@ -119,3 +220,7 @@ def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/chat')
+def chat():
+    return render_template('chat.html')

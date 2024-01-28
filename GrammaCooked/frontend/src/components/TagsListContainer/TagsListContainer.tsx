@@ -92,7 +92,7 @@ const TagsListContainer = () => {
                     onChange={(e) => setNewTag(e.target.value)}
                     mr={2}
                 />
-                <Button onClick={handleAddTag} colorScheme="teal" mr={2}>
+                <Button onClick={handleAddTag} colorScheme="purple" mr={2}>
                     Add Tag
                 </Button>
             </Flex>
@@ -100,7 +100,7 @@ const TagsListContainer = () => {
             {/* Upload Image Input */}
             <Flex>
                 <Input type="file" mb={4} onChange={handleFileChange} mr={2}/>
-                <Button onClick={handleUpload} colorScheme="teal" mr={2}>
+                <Button onClick={handleUpload} colorScheme="purple" mr={2}>
                     Analyze
                 </Button>
             </Flex>
